@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# Autoflow 2.0
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An experimental interface and interaction prototype for styling and connecting nodes in Figma and FigJam.
 
-Currently, two official plugins are available:
+> **Status:** Work in progress. This repository is a second-generation exploration, not a published or production-ready plugin.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## The design problem
 
-## React Compiler
+Native connectors make flows easier to follow, but repeatedly configuring anchors, paths, caps, and line styles interrupts the process of diagramming. Autoflow 2.0 explores a focused control panel for those repeated decisions.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What is implemented
 
-## Expanding the ESLint configuration
+- A React-based plugin panel with controls for connector color, path type, line weight, endpoint styles, and anchors.
+- Plugin-side handling of selection changes and an experimental **paste-to-connect** workflow.
+- Styling of native connectors and attempts to link their endpoints to the last two selected nodes.
+- UI feedback for connection status and processing errors.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Some interface controls are exploratory and not yet fully wired to plugin behavior. The automatic-paste path has not been validated here across all Figma/FigJam contexts.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## How the experiment works
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. Select two non-connector nodes.
+2. Configure the desired connector appearance in the plugin.
+3. Paste a native connector. The plugin attempts to detect it, apply the configuration, and attach it to the selected elements.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+This is a prototype behavior, **not a guarantee** that every selection or paste scenario works.
+
+## Structure
+
+| Path | Purpose |
+| --- | --- |
+| [`src/ui/App.tsx`](src/ui/App.tsx) | React control panel and plugin messages |
+| [`src/code/code.ts`](src/code/code.ts) | Figma API integration and connector operations |
+| [`src/components`](src/components) | Reusable UI and icons |
+| [`manifest.json`](manifest.json) | Local plugin configuration |
+
+## Development
+
+Requires Node.js and Figma Desktop.
+
+```bash
+npm install
+npm run build
+npm run typecheck
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Import `manifest.json` through **Figma → Plugins → Development → Import plugin from manifest…** after building.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Why this project exists
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Autoflow 2.0 is part of my ongoing work on interaction tooling for designers. It documents design exploration and implementation decisions rather than a finished release.
+
+See more finished applications and Figma plugins at [maxavend.com](https://www.maxavend.com/).
+
+© Maximiliano Avendaño.
